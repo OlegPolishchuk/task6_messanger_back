@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import http from 'http';
 import {Server, Socket} from 'socket.io';
 import {loginRouter} from "./routes/loginRouter";
-import {mailboxRouter} from "./routes/mailboxRouter";
 import {socketController} from "./controllers/socketController";
 
 const app = express();
@@ -28,7 +27,6 @@ app.get('/', async (req, res) => {
 
 
 app.use('/login', loginRouter);
-app.use('/mailbox', mailboxRouter)
 
 io.use((socket, next) => {
   const username = socket.handshake.auth.username;

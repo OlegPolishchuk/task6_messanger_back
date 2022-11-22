@@ -12,10 +12,14 @@ interface Message {
 export const socketController =  async (socket: Socket) => {
   let userName = '';
   let socketId = socket.id;
-  console.log(socketId)
 
   socket.on('disconnect', async () => {
+    const user = await User.findOne({userName});
 
+    if (user) {
+      user.status = 'offline';
+      await user.save();
+    }
   })
 
   socket.on('connected', async ({username}) => {
@@ -36,14 +40,15 @@ export const socketController =  async (socket: Socket) => {
 
       socket.broadcast.emit('new-user', usersList);
       socket.emit('load-start-data', {startMessages, usersList, socketId});
-    }
 
+      user.status = 'online';
+      await user.save();
+    }
   })
 
   socket.on('message', async (messageFromUser) => {
     const {recipient, subject, message} = messageFromUser;
     const {userId, username} = recipient;
-    console.log(`recip`, recipient)
     const user = await User.findOne({username});
 
     if (!user) {
@@ -62,12 +67,7 @@ export const socketController =  async (socket: Socket) => {
 
       const messageToClient = user.messages[user.messages.length-1]
 
-      console.log('сработал on-message on server')
-      console.log(`recipient`, recipient)
-
       socket.to(userId).emit('refresh-messages', messageToClient)
     }
   })
-
-
 }

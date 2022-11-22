@@ -15,12 +15,17 @@ export const loginController = async (req: Request, res: Response) => {
         messages: [],
       })
 
-
       await user.save();
 
       return res
         .status(201)
         .json({user})
+    }
+
+    if (user!.status === 'online') {
+      return res
+        .status(401)
+        .json(`Ops! Looks like ${username} is already online`)
     }
 
     res
