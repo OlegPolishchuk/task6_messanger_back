@@ -14,15 +14,13 @@ export const socketController =  async (socket: Socket) => {
   let socketId = socket.id;
 
   socket.on('disconnect', async () => {
-    const user = await User.findOne({userName});
+    console.log(`user ${userName} disconnected`)
 
-    if (user) {
-      user.status = 'offline';
-      await user.save();
-    }
+    await User.updateOne({username: userName}, {$set: {status: 'offline'}})
   })
 
   socket.on('connected', async ({username}) => {
+    console.log(`user ${username} connected`)
     userName = username;
 
     const usersList = [];

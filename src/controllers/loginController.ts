@@ -4,7 +4,6 @@ import User from '../models/User';
 export const loginController = async (req: Request, res: Response) => {
   try {
     const {username} = req.body;
-    console.log(username)
 
     let user = await User.findOne({username})
 
