@@ -58,6 +58,7 @@ export const socketController =  async (socket: Socket) => {
         subject,
         message,
         date: new Date(),
+        isRead: false,
       }
 
       user.messages.push(newMessage);

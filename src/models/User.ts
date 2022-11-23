@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema({
         subject: String,
         message: String,
         date: Date,
+        isRead: {
+          type: Boolean,
+          required: true,
+        }
       }
     ]
   }, {
