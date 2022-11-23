@@ -14,13 +14,10 @@ export const socketController = async (socket: Socket) => {
   let socketId = socket.id;
 
   socket.on('disconnect', async () => {
-    console.log(`user ${userName} disconnected`)
-
     await User.updateOne({username: userName}, {$set: {status: 'offline'}})
   })
 
   socket.on('connected', async ({username}) => {
-    console.log(`user ${username} connected`)
     userName = username;
 
     const usersList = [];
@@ -60,10 +57,16 @@ export const socketController = async (socket: Socket) => {
         isRead: false,
       }
 
+
+
       user.messages.push(newMessage);
       await user.save();
 
       const messageToClient = user.messages[user.messages.length - 1]
+
+      if (username === socket.data.username) {
+        return socket.emit('refresh-messages', messageToClient)
+      }
 
       socket.to(userId).emit('refresh-messages', messageToClient)
     }
