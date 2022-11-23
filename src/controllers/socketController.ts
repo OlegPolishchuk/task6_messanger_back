@@ -9,7 +9,7 @@ interface Message {
   subject?: string | undefined;
 }
 
-export const socketController =  async (socket: Socket) => {
+export const socketController = async (socket: Socket) => {
   let userName = '';
   let socketId = socket.id;
 
@@ -51,8 +51,7 @@ export const socketController =  async (socket: Socket) => {
 
     if (!user) {
       socket.emit('error', {message: 'User doesn\'t exist'})
-    }
-    else {
+    } else {
       const newMessage = {
         from: userName,
         subject,
@@ -64,9 +63,10 @@ export const socketController =  async (socket: Socket) => {
       user.messages.push(newMessage);
       await user.save();
 
-      const messageToClient = user.messages[user.messages.length-1]
+      const messageToClient = user.messages[user.messages.length - 1]
 
       socket.to(userId).emit('refresh-messages', messageToClient)
     }
   })
+
 }
